@@ -1,0 +1,29 @@
+name: Generate a version identifier from the current date
+
+on:
+  workflow_call:
+    inputs:
+      prefix:
+        type: string
+        required: false
+        default: ""
+        description: Prefix to pre-pend to the generated version
+
+    outputs:
+      version:
+        description: Version
+        value: ${{ jobs.generate-version.outputs.version }}
+
+jobs:
+  generate-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: generate version
+        id: version
+        env:
+          PREFIX: ${{ inputs.prefix }}
+        run: |
+          version="v$(date -u +%Y%m%d)"
+          echo "version=${PREFIX}${version}" >> $GITHUB_OUTPUT
